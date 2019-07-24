@@ -114,24 +114,21 @@
         </div>
       </aside>
       <div class="map">
-        <div id="google-maplima"></div>  
-        <div class="preload" style="">
-          <div class="imgpreload">
-            <img src="static/preload.gif" alt="">
-          </div>
-        </div>
-        <div class="map--etiqueta">
-          <span>Mostrando: {{total}} Puntos</span>
-        </div>
+        <here-map :total="total" />
       </div>
     </div>
   </div>
 </template>
 <script>
-import axios from "axios";
+import axios from 'axios'
+import HereMap from './HereMap'
+
 export default {
-  name: "Panel",
-  data() {
+  name: 'Panel',
+  components: {
+    HereMap
+  },
+  data () {
     return {
       mapa: null,
       markerCluster: null,
@@ -178,8 +175,8 @@ export default {
       }
     };
   },
-  mounted() {
-    this.getdatos();
+  mounted () {
+    // this.getdatos()
     // SCRIPT PARA ABRIR EL MENU RESPONSI Y CERRAR
     $(".menuH .menuopen").click(function(event) {
       $(this).addClass("active");
@@ -610,37 +607,6 @@ $(document).ready(function() {
   margin-left: 15px;
   width: 260px !important;
 }
-.preload {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 200;
-  margin: auto;
-  background: #fff;
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flex;
-  display: -o-flex;
-  display: flex;
-  -ms-align-items: center;
-  align-items: center;
-  justify-content: center;
-}
-.imgpreload {
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flex;
-  display: -o-flex;
-  display: flex;
-  -ms-align-items: center;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
 .btn_aside {
   margin-top: 30px;
   text-align: center;
@@ -714,22 +680,6 @@ $(document).ready(function() {
   padding: 10px 0;
   position: relative;
 }
-.map--etiqueta {
-  position: absolute;
-  top: 10px;
-  z-index: 600;
-  right: 0;
-  background: #fff;
-  height: 40px;
-  font-size: 14px;
-  line-height: 40px;
-  border-radius: 6px 0px 0px 6px;
-  color: #797979;
-  padding: 0px 10px 0px 30px;
-  text-align: right;
-  font-weight: bold;
-  box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
-}
 .box--filter {
   background: #e8e8e8;
   padding: 15px 10px;
@@ -768,13 +718,6 @@ $(document).ready(function() {
 }
 .map.active {
   right: -300px;
-}
-.map #google-maplima {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: calc(100vh - 60px);
-  width: 100%;
 }
 .box--price {
   display: block;
