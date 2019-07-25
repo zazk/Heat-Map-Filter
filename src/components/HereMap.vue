@@ -1,9 +1,9 @@
 <template>
-  <div class="">
+  <div>
     <div id="heatmap-maplima" />
     <div class="preload" style="display: none">
       <div class="imgpreload">
-        <img src="static/preload.gif" alt="" />
+        <img src="static/preload.gif" alt="preload" />
       </div>
     </div>
     <div class="map--etiqueta">
@@ -14,14 +14,30 @@
 
 <script>
 const API_KEY = '9S-Qq8kiAq4g1KRquBAyDFAH64crVZ59IpW5MrGcy9c'
+const lines = records.split('\n')
+const points = lines.map(record => record.split(','))
+const headers = points.splice(0, 1)
+// Remove, just for reading
+const [pointExample] = points
+// rememnet both are in strings, review if you need int/long numbers
+const [, , , , latitud, longitud] = pointExample
+// --
+import records from '@/data/records'
 
 export default {
   props: ['total'],
-  mounted () {
+  mounted() {
+    console.log('points', points, 'headers', headers)
+    console.log(
+      'point example latitud',
+      latitud,
+      'point example longitud',
+      longitud
+    )
     this.createMap()
   },
   methods: {
-    createMap () {
+    createMap() {
       let maptypes = new H.service.Platform({
         apikey: API_KEY
       }).createDefaultLayers()
