@@ -19,55 +19,49 @@ import HeatmapOverlay from '@/scripts/leaflet-heatmap'
 import records from '@/data/records'
 // --
 const lines = records.split('\n')
-const points = lines.map(record => record.split(','))
+const points = lines.map(record => {
+  const [, , , , latitud, longitud, , , , tipo, calificacion, size, , , , , grupo] = record.split(',')
+  return { latitud, longitud, tipo, calificacion, size, grupo }
+})
 const headers = points.splice(0, 1)
 // Remove, just for reading
 const [pointExample] = points
 // rememnet both are in strings, review if you need int/long numbers
-const [, , , , latitud, longitud] = pointExample
+const { latitud, longitud } = pointExample
 
 export default {
   props: ['total'],
-  mounted () {
-    console.log('points', points, 'headers', headers)
-    console.log(
-      'point example latitud',
-      latitud,
-      'point example longitud',
-      longitud
-    )
+  mounted() {
+    console.log('headers', headers, 'point example', pointExample)
     this.createMap()
   },
   methods: {
-    createMap () {
+    createMap() {
       var testData = {
         max: 8,
-        data: [{ lat: latitud, lng: longitud }]
+        data: points
       }
 
-      var baseLayer = L.tileLayer(
-        'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        {
-          attribution: '...',
-          maxZoom: 18
-        }
-      )
+      var baseLayer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '...',
+        maxZoom: 18
+      })
 
       var cfg = {
         // radius should be small ONLY if scaleRadius is true (or small radius is intended)
         // if scaleRadius is false it will be the constant radius used in pixels
-        radius: 2,
+        radius: 10,
         maxOpacity: 0.8,
         // scales the radius based on map zoom
-        scaleRadius: true,
+        scaleRadius: false,
         // if set to false the heatmap uses the global maximum for colorization
         // if activated: uses the data maximum within the current map boundaries
         //   (there will always be a red spot with useLocalExtremas true)
         useLocalExtrema: true,
         // which field name in your data represents the latitude - default "lat"
-        latField: 'lat',
+        latField: 'latitud',
         // which field name in your data represents the longitude - default "lng"
-        lngField: 'lng',
+        lngField: 'longitud',
         // which field name in your data represents the data value - default "value"
         valueField: 'count'
       }
@@ -75,8 +69,8 @@ export default {
       var heatmapLayer = new HeatmapOverlay(cfg)
 
       var map = new L.Map('heatmap-maplima', {
-        center: new L.LatLng(25.6586, -80.3568),
-        zoom: 4,
+        center: new L.LatLng(latitud, longitud),
+        zoom: 15,
         layers: [baseLayer, heatmapLayer]
       })
       heatmapLayer.setData(testData)

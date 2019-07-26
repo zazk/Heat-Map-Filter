@@ -974,5 +974,4 @@ export default `IdManzana,Tipo de vía,Nombre calle/avenida,Referencia,Latitud,L
 3419,Av.,Lima Sur/Jr Tacna,,-11.937667,-76.696755,s/n,Las Tinajas,,C,Polleria,Mediano,3,1,4,,Restaurantes(Venta de comida preparada)
 3420,Jr.,Tacna,,-11.937691,-76.696666,s/n,Centro odontologico el Dent,,C,Consultorio dental,Mediano,2,1,5,,Servicio de salud
 3428,Jr.,Chiclayo,,-11.937117,-76.695915,s/n,Restaurante Liz,,C,Restaurante,Mediano,2,1,1,,Restaurantes(Venta de comida preparada)
-3437,Psj.,S/N,Dentro de  Pasaj.S/N,-11.935779,-76.693508,S/N,Doris e Hijos CDH,,C,Venta de Ropa,Mediano,2,1,2,,Venta de ropa_cazado
-`;
+3437,Psj.,S/N,Dentro de  Pasaj.S/N,-11.935779,-76.693508,S/N,Doris e Hijos CDH,,C,Venta de Ropa,Mediano,2,1,2,,Venta de ropa_cazado`
