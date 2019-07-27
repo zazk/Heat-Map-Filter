@@ -21,7 +21,6 @@ import records from '@/data/records'
 const lines = records.split('\n')
 const points = lines.map(record => {
   const [, , , , latitud, longitud, , , , tipo, classification, size, , , , , group] = record.split(',')
-  console.log('Group', group)
   return { latitud, longitud, tipo, classification, size, group }
 })
 const headers = points.splice(0, 1)
@@ -80,13 +79,18 @@ export default {
   },
   methods: {
     createMap() {
+      const mbUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw'
+      // normal
+      // const url = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+      const url = 'http://tile.stamen.com/toner/{z}/{x}/{y}.png'
       const data = {
         max: 8,
         data: this.points
       }
-      const baseLayer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      const baseLayer = L.tileLayer(url, {
+        id: 'mapbox.light',
         attribution: '...',
-        maxZoom: 18
+        maxZoom: 20
       })
 
       const map = new L.Map('heatmap-maplima', {

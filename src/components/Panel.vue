@@ -97,7 +97,6 @@ export default {
     addFilter(event) {
       $('.preload').css('display', 'block')
       var rows = []
-      console.log('Filtros', this.filtros)
     },
 
     createMap() {
