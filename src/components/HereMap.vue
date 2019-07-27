@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="map--etiqueta">
-      <span>Mostrando: {{ total }} Puntos</span>
+      <span>Mostrando: {{ total }} Puntos classification:{{classification}} group:{{group}}</span>
     </div>
   </div>
 </template>
@@ -20,8 +20,9 @@ import records from '@/data/records'
 // --
 const lines = records.split('\n')
 const points = lines.map(record => {
-  const [, , , , latitud, longitud, , , , tipo, calificacion, size, , , , , grupo] = record.split(',')
-  return { latitud, longitud, tipo, calificacion, size, grupo }
+  const [, , , , latitud, longitud, , , , tipo, classification, size, , , , , group] = record.split(',')
+  console.log('Group', group)
+  return { latitud, longitud, tipo, classification, size, group }
 })
 const headers = points.splice(0, 1)
 // Remove, just for reading
@@ -29,51 +30,71 @@ const [pointExample] = points
 // rememnet both are in strings, review if you need int/long numbers
 const { latitud, longitud } = pointExample
 
+const cfg = {
+  // radius should be small ONLY if scaleRadius is true (or small radius is intended)
+  // if scaleRadius is false it will be the constant radius used in pixels
+  radius: 12,
+  maxOpacity: 0.8,
+  // scales the radius based on map zoom
+  scaleRadius: false,
+  // if set to false the heatmap uses the global maximum for colorization
+  // if activated: uses the data maximum within the current map boundaries
+  //   (there will always be a red spot with useLocalExtremas true)
+  useLocalExtrema: true,
+  // which field name in your data represents the latitude - default "lat"
+  latField: 'latitud',
+  // which field name in your data represents the longitude - default "lng"
+  lngField: 'longitud',
+  // which field name in your data represents the data value - default "value"
+  valueField: 'count'
+}
+//
+const heatmapLayer = new HeatmapOverlay(cfg)
+
 export default {
-  props: ['total'],
+  props: ['classification', 'group'],
+  data: () => ({
+    total: points.length,
+    points: points
+  }),
   mounted() {
-    console.log('headers', headers, 'point example', pointExample)
     this.createMap()
+  },
+  beforeUpdate() {
+    let data = []
+    const filtered = {
+      max: 8,
+      data: []
+    }
+    const classification = this.classification
+    const group = this.group
+    if (classification != 'Todos' || group != 'Todos') {
+      data = points.filter(p => {
+        return (classification != 'Todos' && p.classification == classification) || (group != 'Todos' && p.group == group)
+      })
+      filtered.data = data
+    } else {
+      filtered.data = points
+    }
+    heatmapLayer.setData(filtered)
   },
   methods: {
     createMap() {
-      var testData = {
+      const data = {
         max: 8,
-        data: points
+        data: this.points
       }
-
-      var baseLayer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      const baseLayer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '...',
         maxZoom: 18
       })
 
-      var cfg = {
-        // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-        // if scaleRadius is false it will be the constant radius used in pixels
-        radius: 10,
-        maxOpacity: 0.8,
-        // scales the radius based on map zoom
-        scaleRadius: false,
-        // if set to false the heatmap uses the global maximum for colorization
-        // if activated: uses the data maximum within the current map boundaries
-        //   (there will always be a red spot with useLocalExtremas true)
-        useLocalExtrema: true,
-        // which field name in your data represents the latitude - default "lat"
-        latField: 'latitud',
-        // which field name in your data represents the longitude - default "lng"
-        lngField: 'longitud',
-        // which field name in your data represents the data value - default "value"
-        valueField: 'count'
-      }
-      //
-      var heatmapLayer = new HeatmapOverlay(cfg)
-
-      var map = new L.Map('heatmap-maplima', {
+      const map = new L.Map('heatmap-maplima', {
         center: new L.LatLng(latitud, longitud),
         zoom: 15,
         layers: [baseLayer, heatmapLayer]
       })
-      heatmapLayer.setData(testData)
+      heatmapLayer.setData(data)
     }
   }
 }
